@@ -1,10 +1,10 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="CBAM Karbon Muhasebesi",
+    page_title="AB CBAM Karbon Muhasebesi MVP",
     page_icon="◈",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 ELECTRICITY_FACTOR_KG = 0.450  # kg CO2e / kWh (Scope 2, şebeke varsayılanı)
@@ -88,6 +88,52 @@ st.markdown(
         font-size: 0.85rem;
         line-height: 1.45;
         margin-top: 1.2rem;
+    }
+    [data-testid="stNumberInput"] input,
+    input[type="number"],
+    input[type="text"] {
+        min-height: 44px !important;
+        font-size: 16px !important;
+    }
+    @media (max-width: 768px) {
+        .stApp {
+            font-size: 15px;
+        }
+        h1 {
+            font-size: 1.45rem !important;
+            line-height: 1.25 !important;
+        }
+        h2, h3 {
+            font-size: 1.1rem !important;
+        }
+        .hero-kicker {
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+        }
+        .hero-sub {
+            font-size: 0.92rem;
+            margin-bottom: 0.9rem;
+        }
+        .block-container {
+            padding: 1rem 0.85rem 2.4rem !important;
+        }
+        div[data-testid="stMetric"] {
+            padding: 12px 12px;
+            margin-bottom: 0.4rem;
+        }
+        div[data-testid="stMetricValue"] {
+            font-size: 1.15rem !important;
+        }
+        [data-testid="stSidebar"] {
+            min-width: min(88vw, 360px);
+        }
+        .stButton > button {
+            width: 100%;
+            min-height: 44px;
+        }
+        .footnote {
+            font-size: 0.8rem;
+        }
     }
     </style>
     """,
