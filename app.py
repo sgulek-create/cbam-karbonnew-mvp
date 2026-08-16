@@ -20,19 +20,6 @@ st.markdown(
         background: linear-gradient(180deg, #0b1f33 0%, #10263d 42%, #0e1a28 100%);
         color: #e8eef4;
     }
-    [data-testid="stSidebar"] {
-        background: #0a1828;
-        border-right: 1px solid #1f3b57;
-        color: #d7e3ee;
-    }
-    [data-testid="stSidebar"] p,
-    [data-testid="stSidebar"] label,
-    [data-testid="stSidebar"] span,
-    [data-testid="stSidebar"] .stMarkdown {
-        color: #d7e3ee;
-    }
-    [data-testid="stSidebar"] input,
-    [data-testid="stSidebar"] textarea,
     [data-testid="stNumberInput"] input,
     input[type="number"],
     input[type="text"] {
@@ -40,10 +27,14 @@ st.markdown(
         -webkit-text-fill-color: #111111 !important;
         background-color: #ffffff !important;
         caret-color: #111111 !important;
+        min-height: 44px !important;
+        font-size: 16px !important;
     }
     h1, h2, h3 {
         color: #f4f8fb !important;
         letter-spacing: 0.02em;
+        overflow-wrap: anywhere;
+        word-break: break-word;
     }
     .hero-kicker {
         color: #7eb6d9;
@@ -67,9 +58,11 @@ st.markdown(
     }
     div[data-testid="stMetric"] label {
         color: #9db6c9 !important;
+        white-space: normal !important;
     }
     div[data-testid="stMetricValue"] {
         color: #f7fbff !important;
+        overflow-wrap: anywhere;
     }
     .stButton > button {
         background: #1c6ea4;
@@ -77,11 +70,7 @@ st.markdown(
         border: 0;
         border-radius: 8px;
         font-weight: 600;
-        height: 2.6rem;
-    }
-    .stButton > button:hover {
-        background: #2583c2;
-        color: #fff;
+        min-height: 44px;
     }
     .footnote {
         color: #8ea3b5;
@@ -89,51 +78,40 @@ st.markdown(
         line-height: 1.45;
         margin-top: 1.2rem;
     }
-    [data-testid="stNumberInput"] input,
-    input[type="number"],
-    input[type="text"] {
-        min-height: 44px !important;
-        font-size: 16px !important;
+    [data-testid="stSidebar"],
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="collapsedControl"] {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        min-width: 0 !important;
     }
-    @media (max-width: 768px) {
-        .stApp {
-            font-size: 15px;
-        }
-        h1 {
-            font-size: 1.45rem !important;
-            line-height: 1.25 !important;
-        }
-        h2, h3 {
-            font-size: 1.1rem !important;
-        }
-        .hero-kicker {
-            font-size: 0.68rem;
-            letter-spacing: 0.12em;
-        }
-        .hero-sub {
-            font-size: 0.92rem;
-            margin-bottom: 0.9rem;
-        }
+    .stApp > header {
+        background: transparent;
+    }
+    @media (max-width: 900px) {
+        .stApp { font-size: 15px; }
         .block-container {
-            padding: 1rem 0.85rem 2.4rem !important;
+            padding: 0.7rem 0.75rem 2.2rem !important;
+            max-width: 100% !important;
         }
-        div[data-testid="stMetric"] {
-            padding: 12px 12px;
-            margin-bottom: 0.4rem;
+        h1 { font-size: 1.35rem !important; line-height: 1.25 !important; }
+        h2, h3 { font-size: 1.05rem !important; }
+        .hero-kicker { font-size: 0.66rem; letter-spacing: 0.1em; }
+        .hero-sub { font-size: 0.9rem; margin-bottom: 0.8rem; }
+        [data-testid="stHorizontalBlock"] {
+            flex-direction: column !important;
+            gap: 0.55rem !important;
         }
-        div[data-testid="stMetricValue"] {
-            font-size: 1.15rem !important;
+        [data-testid="stHorizontalBlock"] > div {
+            width: 100% !important;
+            min-width: 100% !important;
+            flex: 1 1 100% !important;
         }
-        [data-testid="stSidebar"] {
-            min-width: min(88vw, 360px);
-        }
-        .stButton > button {
-            width: 100%;
-            min-height: 44px;
-        }
-        .footnote {
-            font-size: 0.8rem;
-        }
+        div[data-testid="stMetric"] { padding: 12px; }
+        div[data-testid="stMetricValue"] { font-size: 1.25rem !important; }
+        .stButton > button { width: 100%; }
+        .footnote { font-size: 0.8rem; }
     }
     </style>
     """,
@@ -156,10 +134,15 @@ def calculate_emissions(
     }
 
 
-with st.sidebar:
-    st.markdown("### Tesis girdileri")
-    st.caption("Sayıyı yazıp Enter’a basın. Chrome, Edge veya Yandex kullanın — Internet Explorer desteklenmez.")
+st.markdown('<div class="hero-kicker">AB CBAM · Karbon muhasebesi MVP</div>', unsafe_allow_html=True)
+st.title("Sanayi tesisi karbon ayak izi")
+st.markdown(
+    '<p class="hero-sub">İhracatçılar ve üretim tesisleri için Scope 1, Scope 2 ve toplam emisyonun '
+    "tCO2e cinsinden anlık hesabı.</p>",
+    unsafe_allow_html=True,
+)
 
+with st.expander("Tesis girdileri", expanded=True):
     electricity_kwh = st.number_input(
         "Elektrik tüketimi (kWh)",
         min_value=0.0,
@@ -174,38 +157,30 @@ with st.sidebar:
         step=1.0,
         format="%.2f",
     )
+    st.caption("Sayıyı yazıp Enter’a basın.")
 
-    st.divider()
-    st.markdown("**Emisyon faktörleri**")
-    electricity_factor = st.number_input(
-        "Elektrik (kg CO2e / kWh)",
-        min_value=0.0,
-        value=ELECTRICITY_FACTOR_KG,
-        step=0.001,
-        format="%.3f",
-    )
-    natural_gas_factor = st.number_input(
-        "Doğalgaz (kg CO2e / Sm³)",
-        min_value=0.0,
-        value=NATURAL_GAS_FACTOR_KG,
-        step=0.001,
-        format="%.3f",
-    )
-    st.caption("Varsayılanlar MVP içindir. Resmi CBAM beyanında ülke/tesis özel faktör ve doğrulama gerekir.")
+    with st.expander("Emisyon faktörleri (gelişmiş)"):
+        electricity_factor = st.number_input(
+            "Elektrik (kg CO2e / kWh)",
+            min_value=0.0,
+            value=ELECTRICITY_FACTOR_KG,
+            step=0.001,
+            format="%.3f",
+        )
+        natural_gas_factor = st.number_input(
+            "Doğalgaz (kg CO2e / Sm³)",
+            min_value=0.0,
+            value=NATURAL_GAS_FACTOR_KG,
+            step=0.001,
+            format="%.3f",
+        )
+        st.caption("Varsayılanlar MVP içindir. Resmi CBAM beyanında ülke/tesis özel faktör gerekir.")
 
 results = calculate_emissions(
     electricity_kwh,
     natural_gas_sm3,
     electricity_factor,
     natural_gas_factor,
-)
-
-st.markdown('<div class="hero-kicker">AB CBAM · Karbon muhasebesi MVP</div>', unsafe_allow_html=True)
-st.title("Sanayi tesisi karbon ayak izi")
-st.markdown(
-    '<p class="hero-sub">İhracatçılar ve üretim tesisleri için Scope 1, Scope 2 ve toplam emisyonun '
-    "tCO2e cinsinden anlık hesabı.</p>",
-    unsafe_allow_html=True,
 )
 
 col1, col2, col3 = st.columns(3)
@@ -219,11 +194,10 @@ st.bar_chart(
         "tCO2e": {
             "Scope 1": results["scope_1"],
             "Scope 2": results["scope_2"],
-            "Toplam": results["total"],
         }
     },
     color="#3d9ad1",
-    height=320,
+    height=240,
 )
 
 left, right = st.columns(2)
